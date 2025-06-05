@@ -6,7 +6,7 @@ This package implements a method to calculate crop rotation labels from any give
 
 Installation
 ------------
-``` pip install cyclic-crop-rotation'''
+```pip install cyclic-crop-rotation```
 
 Simple usage
 ------------
@@ -36,4 +36,4 @@ print(seq)
 print(f'Greedy:{[token2standardtoken(i) for i in gr_tok]}')
 print(f'1st Obs:{[token2standardtoken(i) for i in fo_tok]}')
 print(f'Long Rep:{[token2standardtoken(i) for i in lr_tok]}')
-'''
+```
