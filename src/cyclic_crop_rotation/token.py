@@ -64,16 +64,23 @@ def normalize2specific(df,grp_seq,grp_norm,grp_tok):
     ______
         Dataframe of the specific tokens with the same index as the input dataframe.
     '''
+    df_a = df.reset_index(drop=True)
     grp = grp_seq
     grp_c = [f'_{i}' for i  in range(len(grp))]
     grp_return = [i for i  in range(len(grp))]
-    df[grp_c] = pd.DataFrame([np.where(df[grp_norm]==c,df[grp],-1).max(axis=1) for c in range(len(grp_norm))]).T
-    df_1 = df[grp_c+grp_tok].drop_duplicates().melt(id_vars=grp_c)
+    df_a[grp_c] = pd.DataFrame([np.where(df_a[grp_norm]==c,df_a[grp],-1).max(axis=1) for c in range(len(grp_norm))]).T
+    df_1 = df_a[grp_c+grp_tok].drop_duplicates().melt(id_vars=grp_c)
     df_2 = df_1[grp_c+['value']].drop_duplicates()
-    df_2['tok_val'] = df_2.apply(lambda x: _swap_value(x['value'],x[grp_c].to_list()),axis=1)
-    df_2['tok_val'] = df_2['tok_val'].map(token2standardtoken)
-    df_3 = pd.merge(df_1.set_index(grp_c+['value']),df_2.set_index(grp_c+['value']),right_index=True,left_index=True).droplevel('value').pivot(columns='variable').droplevel(0,axis=1).rename(columns={i:j for i,j in zip(grp_tok,grp_return)})
-    return pd.merge(df,df_3,left_on=grp_c,right_index=True)[grp_return]
+    results = []
+    for g,df_g in df_2.groupby('value'):
+        cols = list({f'_{i}' for i in g[0]})
+        df_g1 = df_g[cols].drop_duplicates()
+        df_g1['tok_val']=df_g1.apply(lambda x: (tuple(x[f'_{i}'] for i in g[0]),g[1]),axis=1)
+        df_g1['tok_val'] = df_g1['tok_val'].map(token2standardtoken)
+        results.append(pd.merge(df_g,df_g1,on=cols))
+    df_3 = pd.concat([pd.merge(df_a[grp_c+[i]],pd.concat(results),left_on=grp_c+[i],right_on=grp_c+['value'],how='left')['tok_val'].rename(j) for i,j in zip(grp_tok,grp_return)],axis=1)
+    df_3.index = df.index
+    return df_3
 
 def specific2normalize(df,grp):
     '''
