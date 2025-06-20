@@ -16,7 +16,7 @@ grp = [f'R{i}' for i in range(8)]
 df = pd.DataFrame(records,columns =['idx']+grp+['Shape_Area'])
 # Normalize data, this helps when the data is millions of rows
 grp_norm = [f'N{i}' for i in range(8)]
-df[grp_norm] = specific2normalize(df[grp],grp)
+df[grp_norm] = specific2normalize(df[grp],grp) #note this operation doesn't preserve index so the index must be ordered already
 df_1 = df[grp_norm].drop_duplicates()
 grp_rot = [f'NRot{i}' for i in range(8)]
 grp_srot = [f'Rot{i}' for i in range(8)]

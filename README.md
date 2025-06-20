@@ -10,7 +10,7 @@ Installation
 
 Simple usage
 ------------
-See example folder for more complex use cases. The examples provide context for how to achieve efficient scalablity.  
+See example folder for more complex use cases.  
 
 ```python
 from cyclic_crop_rotation import *

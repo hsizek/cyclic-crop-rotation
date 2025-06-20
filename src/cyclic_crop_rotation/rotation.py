@@ -148,13 +148,7 @@ def greedy_set_cover(words):
         if len(idxs)==1:
             idx = idxs[0]
         else:
-            # Default to the largest word
-            # max_len = max(words[i][3] for i in idxs)
-            # idxs = [i for i in idxs if words[i][3]==max_len]
-            # if len(idxs)==1:
-            #     idx = idxs[0]
-            # else:
-                idx= _idxs_selector(idxs,words)            
+            idx= _idxs_selector(idxs,words)            
         S = S-idx_dict[idx]
         chosen_words.append(idx)
     return [words[i] for i in chosen_words]
